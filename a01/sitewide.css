@@ -14,6 +14,57 @@
     look on W3 schools website for any specific questions on what CSS selectors and styles to use/what the correct syntax is.
 */
 
-h3 .selected {
+h3 {
+    font-weight: 400;
+}
+
+.selected {
     font-weight: bold;
+}
+
+h1 {
+    color: darkblue;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    border: 2px;
+    border-style: solid;
+}
+
+p {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.citation {
+    font-style: italic;
+    background-color: #d3d3d3;
+    font-size: small;
+}
+
+.small-img {
+    max-width: 20vw;
+    height: auto;
+    align-content: center;
+}
+
+#quote {
+    font-style: italic;
+    padding-left: 4vw;
+    padding-right: 4vw;
+}
+
+.show {
+    border-style: solid;
+    border: 2px;
+    color: black;
+}
+
+.hidden {
+    display: none;
+}
+
+.highlight-on-hover:hover{
+    background: lightgreen;
+}
+
+#references h4 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
