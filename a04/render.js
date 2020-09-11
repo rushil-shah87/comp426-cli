@@ -1,13 +1,11 @@
 /**
  * Course: COMP 426
  * Assignment: a04
- * Author: <type your name here>
+ * Author: Rushil Shah
  *
  * This script uses jQuery to build an HTML page with content taken from the
  * data defined in data.js.
  */
-
-
 
 /**
  * Given a hero object (see data.js), this function generates a "card" showing
@@ -18,6 +16,7 @@ export const renderHeroCard = function(hero) {
     // TODO: Generate HTML elements to represent the hero
     // TODO: Return these elements as a string, HTMLElement, or jQuery object
     // Example: return `<div>${hero.name}</div>`;
+    
 };
 
 
@@ -32,6 +31,7 @@ export const renderHeroEditForm = function(hero) {
     // TODO: Generate HTML elements to represent the hero edit form
     // TODO: Return these elements as a string, HTMLElement, or jQuery object
     // Example: return `<form>${hero.name}</form>`;
+    
 };
 
 
@@ -62,6 +62,7 @@ export const loadHeroesIntoDOM = function(heroes) {
 /**
  * Use jQuery to execute the loadHeroesIntoDOM function after the page loads
  */
-$(function() {
+$( function() {
     loadHeroesIntoDOM(heroicData);
+    $root.append(randomHero);
 });

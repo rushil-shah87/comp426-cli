@@ -1,3 +1,4 @@
+import { bubbleSort } from "../medium/medium_1.js";
 /**
  *
  * @param {number} a
@@ -9,7 +10,8 @@
  * see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
  */
 export function sumToString(a, b) {
-
+    let sum = a + b;
+    return ("" + a + " + " + b + " = " + sum);
 }
 
 
@@ -24,7 +26,14 @@ export function sumToString(a, b) {
  *
  */
 export function getIncreasingArray(startNumber, endNumber) {
-
+    if (startNumber > endNumber) {
+        return [];
+    }
+    let array = [startNumber];
+    for (let i = startNumber; i < endNumber; i++) {
+        array.push(i + 1);
+    }
+    return array;
 }
 
 /**
@@ -35,7 +44,16 @@ export function getIncreasingArray(startNumber, endNumber) {
  * and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math
  */
 export function maxAndMin(numbers) {
-
+    let maxVal = numbers.reduce(function (x, y) {
+        return Math.max(x, y);
+    });
+    let minVal = numbers.reduce(function (x, y) {
+        return Math.min(x, y);
+    });
+    return {
+        min: minVal,
+        max: maxVal,
+    };
 }
 
 /**
@@ -49,5 +67,38 @@ export function maxAndMin(numbers) {
  *
  */
 export function countArray(array) {
+    let size = array.length;
+    const counts = {};
+    for (let i = 0; i < size; i++) {
+        if (counts.hasOwnProperty([array[i]])) {
+            continue;
+        }
+        counts[array[i]] = 1;
+        for (let j = 0; j < size; j++) {
+            if (areSame(array[i], array[j]) && i != j) {
+                counts[array[i]]++;
+            }
+        }
+    }
+    return counts;
+}
 
+function areSame(a, b) {
+    if (a === b) return true;
+    if ((typeof a === 'object') && (typeof b ==='object')) {
+        let aKeys = Object.getOwnPropertyNames(a);
+        let bKeys = Object.getOwnPropertyNames(b);
+        if (aKeys.length != bKeys.length) return false;
+        for (let i = 0; i < aKeys.length; i++) {
+            if (a[aKeys[i]] !== b[aKeys[i]]) return false;
+        }
+        return true;
+    }
+    if (Array.isArray(a) && Array.isArray(b)) {
+        if (a.length !== b.length) return false;
+        for (let i=0; i<a.length; i++) {
+            if (a[i] !== b[i]) return false;
+        }
+        return true;
+    }
 }
