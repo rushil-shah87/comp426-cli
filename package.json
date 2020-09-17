@@ -18,5 +18,14 @@
     "form-data": "^2.5.0",
     "jquery": "^3.5.1",
     "prompts": "^2.1.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rushil-shah87/comp426-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rushil-shah87/comp426-cli/issues"
+  },
+  "homepage": "https://github.com/rushil-shah87/comp426-cli#readme"
 }
