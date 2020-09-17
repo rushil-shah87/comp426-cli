@@ -15,7 +15,27 @@
  * @param hero  A hero object (see data.js)
  */
 export const renderHeroCard = function(hero) {
-    // TODO: Copy your code from a04 to render the hero card
+    return  `<div class="card column" style="border-color:${hero.backgroundColor}; border-style: solid; margin: 5px;">
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-left">
+                            <figure class="image is-48x48">
+                                <span><img src="${hero.img}" alt="hero picture"></span>
+                            </figure>
+                        </div>
+                        <div class="media-content" >
+                            <p class="title is-4" style="border-color:${hero.color}; border-style: solid;"> ${hero.name} </p>
+                            <p class="subtitle is-6">${hero.first} ${hero.last}</p>
+                        </div>
+                    </div>
+                    <div class="content"> ${hero.description}
+                        <br> <time> ${hero.firstSeen} </time> 
+                    </div>
+                    <div class="has-text-centered">
+                        <button> edit </button>
+                    </div>
+                </div>
+            </div>`;
 };
 
 
@@ -27,7 +47,29 @@ export const renderHeroCard = function(hero) {
  * @param hero  The hero object to edit (see data.js)
  */
 export const renderHeroEditForm = function(hero) {
-    // TODO: Copy your code from a04 to render the hero edit form
+    return  `<form>
+                <div class="columns" style="margin: 10px; border-color:${hero.backgroundColor}; border-style: solid;">
+                    <div class="column is-one-third">
+                        <b>${hero.name} </b>: Edit Form <br>
+                        <label for="fname">First name:</label><br>
+                            <input type="text" id="fname" name="fname" value="${hero.first}"><br>
+                        <label for="lname">Last name:</label><br>
+                            <input type="text" id="lname" name="lname" value="${hero.last}"><br>
+                    </div>
+                    <div class="column"><br>
+                        <label for="superhero name">Hero name:</label><br>
+                            <input type="text" id="heroname" name="heroname" value="${hero.name}"><br>
+                        <label for="description">Description:</label><br>
+                            <textarea name="description">${hero.description}</textarea><br>
+                    </div>
+                    <div class="column"><br>
+                        <label for="firstseen">First seen date:</label><br>
+                            <input type="date" pattern="\d{4}-\d{2}-\d{2}" value="${hero.firstSeen.toISOString().slice(0,10)}"><br>
+                        <button type="submit"> Save </button>
+                        <button type="button"> Cancel </button>
+                    </div>
+                </div>
+            </form>` ;
 };
 
 
@@ -78,11 +120,12 @@ export const loadHeroesIntoDOM = function(heroes) {
     // Grab a jQuery reference to the root HTML element
     const $root = $('#root');
 
-    // TODO: Generate the heroes using renderHeroCard()
-    //       NOTE: Copy your code from a04 for this part
+    // Grab a jQuery reference to the root HTML element
+    const $root = $("#root");
 
-    // TODO: Append the hero cards to the $root element
-    //       NOTE: Copy your code from a04 for this part
+    for(let i = 0; i < heroes.length; i++){
+        $root.append(renderHeroCard(heroes[i]));
+    }
 
     // TODO: Use jQuery to add handleEditButtonPress() as an event handler for
     //       clicking the edit button
