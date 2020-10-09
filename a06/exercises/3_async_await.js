@@ -18,7 +18,19 @@ import { heroData } from "./data";
  *                             after 1.5 seconds if no hero could be found
  */
 export function getHeroByIdAsync(heroData, id) {
-  // Copy-and-paste code here
+  return new Promise(((resolve, reject) => {
+    // Resolve is used as a callback on a success
+    // Reject is used as a callback on a failure
+    let hero = heroData.find((h) => h.id == id);
+    setTimeout(() => {
+      if (hero == undefined) {
+        reject(`Hero not found - input a valid ID`);
+      } else {
+        resolve(hero);
+      }
+    }, 1500);
+
+  }));
 }
 
 

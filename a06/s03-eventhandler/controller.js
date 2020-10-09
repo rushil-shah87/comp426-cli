@@ -17,10 +17,13 @@ document.body.onload = async function () {
   // Attach the maze to the dom
   document.getElementById('root').appendChild(maze.dom);
 
-  // TODO: Write code to solve the maze here
-  //  \/ \/ \/ \/ \/
+  // Code to solve the maze
+  const moves = ['north', 'east', 'east', 'north'];
+  token.moveAsync(moves.shift());
+  token.onmoveend = function() {
+      if (moves.length > 0) {
+          token.moveAsync(moves.shift());
+      }
+  };
 
-
-
-  //  /\ /\ /\ /\ /\
 }

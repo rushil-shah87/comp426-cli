@@ -39,7 +39,9 @@ export async function getTwoHeroes(heroData, hero1Id, hero2Id) {
  * @returns {Promise<object>}
  */
 export async function getTwoHeroesSolution(heroData, hero1Id, hero2Id) {
-
+  let hero1 = getHeroByIdAsync(heroData, hero1Id);
+  let hero2 = await getHeroByIdAsync(heroData, hero2Id);
+  return { hero1, hero2 };
 }
 
 

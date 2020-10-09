@@ -58,7 +58,7 @@ export const renderHeroEditForm = function(hero) {
                         <textarea class="description" name="description">${hero.description}</textarea> <br>
                     <br>
                     <label for="firstseen">First seen date:</label> <br>
-                        <input class="date" type="date" pattern="\d{4}-\d{2}-\d{2}" value="${hero.firstSeen.toISOString().slice(0,10)}"><br>
+                        <input required class="date" type="date" value="${hero.firstSeen.toISOString().slice(0,10)}"><br>
                     <br>
                     <div class="has-text-centered">
                         <button type="submit" class="save-edit"> Save </button>
@@ -90,6 +90,7 @@ export const handleCancelButtonPress = function(event) {
     //       hero's edit form in the DOM with their card instead
     let hero = heroicData.find((h) => h.id == $(event.target).closest('.edit-form').data('id'));
     $(event.target).closest('.edit-form').replaceWith(renderHeroCard(hero));
+    $('.edit-hero').on('click', handleEditButtonPress);
 };
 
 /**
@@ -101,36 +102,23 @@ export const handleEditFormSubmit = function(event) {
     // TODO: Render the hero card using the updated field values from the
     //       submitted form and replace the hero's edit form in the DOM with
     //       their updated card instead
-    // event.preventDefault();
-    let old_hero = heroicData.find((h) => h.id == $(event.target).closest('.edit-form').data('id'));
+    event.preventDefault();
+    let hero = heroicData.find((h) => h.id == $(event.target).closest('.edit-form').data('id'));
     
     let newfirst = $(event.target).closest('.edit-form').find('.fname').val();
     let newlast = $(event.target).closest('.edit-form').find('.lname').val();
     let newname = $(event.target).closest('.edit-form').find('.hname').val();
     let newdescription = $(event.target).closest('.edit-form').find('.description').val();
-    let newdate = $(event.target).closest('.edit-form').find('.date').val();
-    let newdateobj = new Date(newdate.split('-')[0],newdate.split('-')[1],newdate.split('-')[2]);
-    let newhero = {
-        id: old_hero.id,
-        first: newfirst,
-        last: newlast,
-        name: newname,
-        img: old_hero.img,
-        color: old_hero.color,
-        backgroundColor: old_hero.backgroundColor,
-        subtitle: old_hero.subtitle,
-        description: newdescription,
-        firstSeen: newdateobj,
-    };
+    let newdate = $(event.target).closest('.edit-form').find('.date').val().split('-');
+    let newdateobj = new Date(newdate[0], newdate[1]-1, newdate[2]);
 
-    heroicData[(old_hero.id)-1].first = newfirst;
-    heroicData[(old_hero.id)-1].last = newlast;
-    heroicData[(old_hero.id)-1].name = newname;
-    heroicData[(old_hero.id)-1].description = newdescription;
-    heroicData[(old_hero.id)-1].date = newdateobj;
+    hero.first = newfirst;
+    hero.last = newlast;
+    hero.name = newname;
+    hero.description = newdescription;
+    hero.firstSeen = newdateobj;
 
-    debugger;
-    $(event.target).closest('.edit-form').replaceWith(renderHeroCard(newhero));
+    $(event.target).closest('.edit-form').replaceWith(renderHeroCard(hero));
     $('.edit-hero').on('click', handleEditButtonPress);
 };
 

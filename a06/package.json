@@ -1,7 +1,6 @@
 {
   "name": "a06",
   "version": "1.0.0",
-  "description": "",
   "main": "maze.js",
   "scripts": {
     "callbacks": "node -r esm exercises/1_callbacks.js",
@@ -13,5 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "esm": "^3.2.25"
-  }
+  },
+  "description": ""
 }

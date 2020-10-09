@@ -1,5 +1,4 @@
-import { heroData } from "./data";
-
+import { heroData } from "../exercises/data.js";
 
 /**
  * This function searches an array of heroes to find one with a particular id.
@@ -22,18 +21,20 @@ import { heroData } from "./data";
  */
 export function getHeroByIdCallback(heroData, id, callback) {
   // 1. Find the hero with the correct id in the heroData array
+  let hero = heroData.find((h) => h.id == id);
 
   // 2. Use setTimeout() to execute code after 1.5 seconds. See the assignment
   //    write-up for instructions of how to use setTimeout().
-
   // 3. After 1.5 seconds, execute the callback() function, passing in the hero
   //    with the correct id as a parameter to the function.
+  setTimeout(() => { 
+    callback(hero);  
+  }, 1500); 
 }
 
 
 // Uncomment this code to locally run your getHeroByIdCallback() function
-/*
 getHeroByIdCallback(heroData, 2, (hero) => {
     console.log(`Found the hero with id ${hero.id}`, hero);
 });
-*/
+
