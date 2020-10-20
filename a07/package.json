@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "console": "node -r esm run_in_console.js"
+    "console": "node -r esm run_in_console.js",
+    "testing": "node -r esm testing.js"
   },
   "author": "",
   "license": "ISC",
