@@ -3,13 +3,6 @@
  * COMP 426 Assignment 7
  */
 
-let gameState = {
-    board: [],
-    score: 0,
-    won: false,
-    over: false
-}
-
 let Game = class {
     constructor(dim) {
         this.dim = dim;
@@ -17,47 +10,76 @@ let Game = class {
         this.listeners = [];
     }
 
+    gameState = {
+        board: [],
+        score: 0,
+        won: false,
+        over: false
+    }
+
+    updateListeners(event) {
+        this.listeners.forEach((l) => l(event));
+    }
+
+    addListener(listener) {
+        let idx = this.listeners.findIndex((l) => l == listener);
+        if (idx == -1) {
+            this.listeners.push(listener);
+        }
+    }
+
+    removeListener(listener) {
+        let idx = this.listeners.findIndex((l) => l == listener);
+        if (idx != -1) {
+            this.listeners.splice(idx, 1);
+        }
+    }
+
     setupNewGame() {
         // create new array size dim^2
-        gameState.board = new Array(this.dim ** 2)
-        gameState.board.fill(0);
+        this.gameState.board = new Array(this.dim ** 2)
+        this.gameState.board.fill(0);
         // add 2 random tiles
         this.addTile();
         this.addTile();
+        // make sure score, won, over are correct
+        this.gameState.score = 0;
+        this.gameState.won = false;
+        this.gameState.over = false;
     }
 
     loadGame(oldState) {
-        gameState.board = oldState.board;
-        gameState.score = oldState.score;
-        gameState.won = oldState.won;
-        gameState.over = oldState.over;
+        this.gameState.board = oldState.board;
+        this.gameState.score = oldState.score;
+        this.gameState.won = oldState.won;
+        this.gameState.over = oldState.over;
     }
 
     // MOVE LOGIC --------------------------------------------------------
     move(direction) {
         // console.log('shift ' + direction);
-        let prev = gameState.board.slice(0);
+        let prev = this.gameState.board.slice(0);
         switch (direction) {
             case 'right':
-                gameState.board = this.moveRight(gameState.board, true);
+                this.gameState.board = this.moveRight(this.gameState.board, true);
                 break;
             case 'down':
-                gameState.board = this.moveDown(gameState.board, true);
+                this.gameState.board = this.moveDown(this.gameState.board, true);
                 break;
             case 'left':
-                gameState.board = this.moveLeft(gameState.board, true);
+                this.gameState.board = this.moveLeft(this.gameState.board, true);
                 break;
             case 'up':
-                gameState.board = this.moveUp(gameState.board, true);
+                this.gameState.board = this.moveUp(this.gameState.board, true);
                 break;
         }
         // console.log(this.toString());
         if (this.checkValid(prev)) {
-            this.updateListeners(Game.Event.MOVE);
             this.addTile();
-            gameState.over = this.checkLose();
+            this.updateListeners(Game.Event.MOVE);
+            this.gameState.over = this.checkLose();
         }
-        // console.log('score: ' + gameState.score);
+        // console.log('score: ' + this.gameState.score);
     }
 
     moveRight(gameBoard, realMove) {
@@ -100,22 +122,22 @@ let Game = class {
                     if (prev === curr) {
                         arr[idx - 1] = curr * 2;
                         arr[idx] = 0;
-                        if(realMove) {
-                            gameState.score += curr * 2;
+                        if (realMove) {
+                            this.gameState.score += curr * 2;
+                            // WIN CONDITION
                             if (curr * 2 == 2048) {
-                                // WIN CONDITION
-                                gameState.won = true;
-                                this.updateListeners(Game.Event.WIN);          
-                            }   
-                        }   
-                    } 
+                                this.gameState.won = true;
+                                this.updateListeners(Game.Event.WIN);
+                            }
+                        }
+                    }
                     return arr[idx];
                 });
             } else continue;
-        
+
             // cut out 0s again
             row = row.filter((e) => e !== 0);
-            // set noninteger values to 0
+            // set non-integer values to 0
             for (let g = 0; g < this.dim; g++) {
                 if (!Number.isInteger(row[g])) row[g] = 0;
             }
@@ -134,14 +156,14 @@ let Game = class {
     toString() {
         let boardString = '';
         for (let i = 0; i < this.dim ** 2; i++) {
-            boardString += (gameState.board[i] + '\t');
+            boardString += (this.gameState.board[i] + '\t');
             if (i % this.dim == this.dim - 1) boardString += '\n'
         }
         return boardString;
     }
 
     onMove(callback) {
-        this.addListener((e)=> {
+        this.addListener((e) => {
             if (e == Game.Event.MOVE) {
                 callback(this.gameState);
             }
@@ -149,8 +171,7 @@ let Game = class {
     }
 
     onWin(callback) {
-        gameState.won = true;
-        this.addListener((e)=> {
+        this.addListener((e) => {
             if (e == Game.Event.WIN) {
                 callback(this.gameState);
             }
@@ -158,8 +179,7 @@ let Game = class {
     }
 
     onLose(callback) {
-        // gameState.over = true;
-        this.addListener((e)=> {
+        this.addListener((e) => {
             if (e == Game.Event.LOSE) {
                 callback(this.gameState);
             }
@@ -167,26 +187,26 @@ let Game = class {
     }
 
     getGameState() {
-        return gameState;
+        return this.gameState;
     }
 
     addTile() {
         // console.log("add tile called");
         let idx = Math.floor(Math.random() * (this.dim ** 2));
-        while (gameState.board[idx] != 0) {
+        while (this.gameState.board[idx] != 0) {
             idx = Math.floor(Math.random() * (this.dim ** 2));
         }
         if (Math.random() > .9) {
-            gameState.board[idx] = 4;
+            this.gameState.board[idx] = 4;
             // console.log("inserted 4 into: " + idx);
         } else {
-            gameState.board[idx] = 2;
+            this.gameState.board[idx] = 2;
             // console.log("inserted 2 into: " + idx);
         }
     }
 
     checkValid(prev) {
-        if (JSON.stringify(prev) == JSON.stringify(gameState.board)) {
+        if (JSON.stringify(prev) == JSON.stringify(this.gameState.board)) {
             // console.log('laws violated. stop.');
             return false;
         } else {
@@ -196,14 +216,14 @@ let Game = class {
     }
 
     checkLose() {
-        let gameCopy = gameState.board.slice(0);
-        if (gameCopy.some((i)=>i==0)) return false;
+        let gameCopy = this.gameState.board.slice(0);
+        if (gameCopy.some((i) => i == 0)) return false;
         if (JSON.stringify(this.moveRight(gameCopy, false)) == JSON.stringify(gameCopy) &&
             JSON.stringify(this.moveDown(gameCopy, false)) == JSON.stringify(gameCopy) &&
             JSON.stringify(this.moveLeft(gameCopy, false)) == JSON.stringify(gameCopy) &&
             JSON.stringify(this.moveUp(gameCopy, false)) == JSON.stringify(gameCopy)) {
             // console.log('game over');
-            gameState.over = true;
+            this.gameState.over = true;
             this.updateListeners(Game.Event.LOSE);
             return true;
         }
@@ -211,29 +231,12 @@ let Game = class {
         return false;
     }
 
-    updateListeners(event) {
-        this.listeners.forEach((l) => l(event));    
-    }
-
-    addListener(listener) {
-        let idx = this.listeners.findIndex((l) => l == listener);
-        if (idx == -1) {
-            this.listeners.push(listener);
-        }
-    }
-
-    removeListener(listener) {
-        let idx = this.listeners.findIndex((l) => l == listener);
-        if (idx != -1) {
-            this.listeners.splice(idx, 1);
-        }
-    }
 };
 
 Game.Event = {
-    MOVE: 0,
-    WIN: 1,
-    LOSE: 2
+    LOSE: 0,
+    MOVE: 1,
+    WIN: 2
 };
 
 export function transpose(board, dim) {

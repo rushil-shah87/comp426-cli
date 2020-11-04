@@ -3,7 +3,7 @@ import Game from "./engine/game";
 let game = new Game(4);
 
 game.loadGame({
-    board: [ 0,  0, 16,  0, 4,  0,  4,  0, 2,  0,  0,  2, 0,  0,  0,  2],
+    board: [ 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0],
     score: 0,
     won: false,
     over: false
@@ -12,8 +12,8 @@ game.loadGame({
 console.log('starting board');
 console.log(game.toString());
 
-console.log('move right');
-game.move('right');
+console.log('move up');
+game.move('up');
 
 console.log(game.toString());
 

@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.0",
     "bestzip": "^2.1.7",
     "browser-sync": "^2.26.12",
     "bulma": "^0.9.0",

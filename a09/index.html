@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Comp 426 Twitter</title>
+
+    <!-- CSS stylesheets below -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="columns">
+        <div class="column is-full"></div>
+    </div>
+    <div class="columns">
+        <div class="column is-three-fifths tab">
+            <h1>Not Twitter</h1>
+        </div>
+        <div class="column">
+            <div class="has-text-centered rtab">
+                <button id="write-tweet" class="button is-dark"> Write New Tweet </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tweet-editor"></div>
+    <div class="columns">
+        <div class="column is-full"></div>
+    </div>
+    <div id="root" class="columns is-multiline feed"></div>
+
+    <!-- JavaScript files below -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./twitter.js"></script>
+</body>
+
+</html>

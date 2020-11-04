@@ -1,0 +1,14 @@
+div[class="col-3"] {
+    border: 3px black solid;
+    height: auto;
+    padding: 3vw;
+    justify-content: center;
+    background-color: bisque;
+    font-size: x-large;
+    text-align: center;
+    font-weight: bold;
+}
+
+.header, .buttons{
+    text-align: center;
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>2048 Game</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    <script src="./node_modules/jquery/dist/jquery.js"> </script>
+    <script type="module" src="./index.js"></script>
+
+</head>
+
+<body style="background: lightblue;">
+
+    <div class="header">
+        <h1>2048 Game</h1>
+        <p>Instructions: use the arrow keys to combine tiles and get to 2048</p>
+    </div>
+
+    <div class="container" id="board">
+
+    </div>
+
+    <div>
+        <p></p>
+        <div class="row">
+            <div class="col-4 notifications"></div>
+            <div class="col-2"><p id=score></p></div>
+            <div class="col-2"><button id="reset" type="button">Reset (r)</button></div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+h1 {
+    font-size: xx-large;
+    font-weight: bolder;
+}
+
+.tab {
+    margin-left: 5%;
+}
+
+.feed {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+#tweet-editor {
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.editor-buttons {
+    position: relative;
+    float: right;
+}
+
+.title {
+    font-size: 150%;
+}
+
+.subtitle {
+    line-height: 0%;
+}

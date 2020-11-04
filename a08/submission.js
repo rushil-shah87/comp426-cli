@@ -19,7 +19,11 @@
  * @returns  {Object}  The body of the HTTP response.
  */
 export async function fn1() {
-
+    let result = await axios({
+        method: 'get',
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/heroes',
+    });
+    return result.data;
 };
 
 
@@ -39,7 +43,14 @@ export async function fn1() {
  * @returns  {Number}  The HTTP status code of the response.
  */
 export async function fn2() {
-
+    let result = await axios({
+        method: 'get',
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/heroes',
+        params: {
+            sort: 'first ASC',
+        }
+    });
+    return result.status;
 };
 
 
@@ -70,7 +81,16 @@ export async function fn2() {
  * @returns  {Object}  The complete axios response object
  */
 export async function fn3() {
-  
+    let result = await axios({
+        method: 'post',
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/users',
+        data: {
+            first: 'Rushil',
+            last: 'Shah',
+            onyen: 'rushil87',
+        }
+    });
+    return result;
 };
 
 
@@ -92,7 +112,19 @@ export async function fn3() {
  *                     request fails
  */
 export async function fn4() {
-  
+    try {
+        const result = await axios({
+            method: 'post',
+            url: 'https://comp426-1fa20.cs.unc.edu/a08/users',
+            data: {
+                first: 'Rushil',
+                last: 'Shah',
+            }
+        });
+        return result;
+    } catch (error) {
+        return error;
+    }
 };
 
 
@@ -110,7 +142,14 @@ export async function fn4() {
  * @returns  {Object}  The complete axios response object
  */
 export async function fn5() {
-  
+    let result = await axios({
+        method: 'put',
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/headers',
+        headers: {
+            'my-custom-request-header': 'Hello, World!',
+        }
+    });
+    return result;
 };
 
 
@@ -131,5 +170,9 @@ export async function fn5() {
  *   "my-custom-response-header"
  */
 export async function fn6() {
-  
+    let result = await axios({
+        method: 'get',
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/headers',
+    });
+    return result.headers['my-custom-response-header'];
 };
