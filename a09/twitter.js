@@ -8,15 +8,20 @@ async function renderFeed() {
     let body;
     let author;
     let created;
+    let likes;
+    let retweets;
     for (let i = 0; i < 50; i++) {
         type = result.data[i].type;
         body = result.data[i].body;
         author = result.data[i].author;
         created = new Date(result.data[i].createdAt);
         created = created.toString().slice(0, 24);
+        likes = result.data[i].likeCount;
+        retweets = result.data[i].retweetCount;
 
         let tweet = document.createElement("div");
         tweet.classList.add("card", "column", "is-one-third", "is-spaced")
+        tweet.setAttribute("tweet-id", result.data[i].id);
         let content_div = document.createElement("div");
         content_div.classList.add("card-content");
         let tweetinfo_div = document.createElement("div");
@@ -31,14 +36,40 @@ async function renderFeed() {
         let body_div = document.createElement("div");
         body_div.classList.add("content", "title");
         body_div.innerHTML = body;
+        let likesretweets = document.createElement("div");
+        likesretweets.classList.add("columns");
+        let lr_info = document.createElement("div");
+        lr_info.classList.add("column", "is-two-thirds");
         let likes_p = document.createElement("p");
-        likes_p.classList.add("subtitle")
+        likes_p.classList.add("is-small")
+        likes_p.innerHTML = likes.toString() + ' likes';
+        let retweets_p = document.createElement("p");
+        retweets_p.classList.add("is-small")
+        retweets_p.innerHTML = retweets.toString() + ' retweets';
+        if (result.data[i].isLiked) {
+            likes_p.innerHTML += " (you have liked this tweet)";
+        }
+        let lr_btns = document.createElement("div");
+        lr_btns.classList.add("column");
+        let like_btn = document.createElement("button");
+        like_btn.classList.add("button", "is-dark", "is-outlined", "like-tweet-btn", "is-small");
+        like_btn.innerHTML = "Like Tweet";
+        let rtwt_btn = document.createElement("button");
+        rtwt_btn.classList.add("button", "is-dark", "is-outlined", "rtwt-btn", "is-small");
+        rtwt_btn.innerHTML = "Retweet";
 
         tweetinfo_div.appendChild(author_p);
         tweetinfo_div.appendChild(time_p);
         tweetinfo_div.appendChild(space);
         content_div.appendChild(tweetinfo_div);
         content_div.appendChild(body_div);
+        lr_info.appendChild(likes_p);
+        lr_info.appendChild(retweets_p);
+        likesretweets.appendChild(lr_info);
+        lr_btns.appendChild(like_btn);
+        lr_btns.appendChild(rtwt_btn);
+        likesretweets.appendChild(lr_btns);
+        content_div.appendChild(likesretweets);
         tweet.appendChild(content_div);
 
         if (result.data[i].isMine) {
@@ -47,7 +78,6 @@ async function renderFeed() {
             let edit_button = document.createElement("button");
             edit_button.classList.add("card-footer-item", "button", "edit-button");
             edit_button.innerHTML = "Edit";
-            edit_button.setAttribute("tweet-id", result.data[i].id);
             $('.edit-button').on('click', handleEditTweet);
             let delete_button = document.createElement("button");
             delete_button.classList.add("card-footer-item", "button", "delete-button");
@@ -62,6 +92,10 @@ async function renderFeed() {
     }
 };
 
+async function renderTweetByID(id) {
+
+}
+
 function renderTweetWriter() {
     return `
         <div class="columns is-multiline">
@@ -70,7 +104,7 @@ function renderTweetWriter() {
                 rows="2"></textarea>
             <div>
             <div class="column editor-buttons">
-                <button id="send-tweet" class="button is-info is-light"> Send Tweet </button>
+                <button id="send-tweet" class="button is-info is-light" type="submit"> Send Tweet </button>
                 <button id="cancel-tweet" class="button is-danger is-light"> Cancel </button>
             </div>
         </div>
@@ -98,7 +132,7 @@ function renderCancelEditButton() {
 
 function handleEditTweet(event) {
     let tweet = $(event.target).closest('.card').find('.content').html();
-    let tweet_id = $(event.target).closest('.card').find('.edit-button').attr('tweet-id');
+    let tweet_id = $(event.target).closest('.card').attr('tweet-id');
     $(event.target).closest('.card').find('.content').replaceWith(renderTweetEditor(tweet));
     $(event.target).closest('.card').find('.delete-button').replaceWith(renderCancelEditButton());
     $(event.target).closest('.card').find('.edit-button').replaceWith(renderSaveEditButton(tweet_id));
@@ -108,7 +142,7 @@ function handleEditTweet(event) {
 
 async function handleSaveEdits(event) {
     let body = $(event.target).closest('.card').find('.save-edits-button').val();
-    let id = $(event.target).closest('.card').find('.save-edits-button').attr("tweet-id");
+    let id = $(event.target).closest('.card').attr("tweet-id");
     let url = "https://comp426-1fa20.cs.unc.edu/a09/tweets/" + id.toString();
     console.log(url);
     try {
@@ -129,8 +163,19 @@ function handleCancelEdits(event) {
 
 }
 
-function handleDeleteTweet(event) {
-
+async function handleDeleteTweet(event) {
+    let id = $(event.target).closest('.card').attr("tweet-id");
+    let url = "https://comp426-1fa20.cs.unc.edu/a09/tweets/" + id.toString();
+    console.log(url);
+    try {
+        const result = await axios({
+            method: 'delete',
+            url,
+            withCredentials: true,
+        });
+    } catch {
+        console.log("error deleting tweet");
+    }
 }
 
 function handleWriteTweet(event) {
@@ -159,8 +204,18 @@ async function handleSendTweet(event) {
     handleCancelTweet();
 }
 
+function handleLikeTweet(event) {
+    alert('you liked a goddamn tweet');
+}
+
+async function handleRetweet(event) {
+
+}
+
 function setListeners() {
     $('#write-tweet').on('click', handleWriteTweet);
+    $('.like-tweet-btn').on('click', handleLikeTweet);
+    $('.rtwt-btn').on('click', handleRetweet);
 }
 
 const handleEditButtonPress = function(event) {
@@ -172,6 +227,7 @@ const handleEditButtonPress = function(event) {
 
 $(() => {
     console.log("loaded");
-    setListeners();
     renderFeed();
+    setListeners();
+
 });
