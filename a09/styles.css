@@ -40,11 +40,6 @@ h1 {
     justify-content: center;
 }
 
-.is-right-aligned {
-    display: flex;
-    align-items: flex-end;
-}
-
 
 /* .border {
     border-style: solid;

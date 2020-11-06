@@ -6,12 +6,12 @@ async function renderFeed() {
         url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets',
         withCredentials: true,
     });
-    let type;
     let body;
     let author;
     let created;
     let likes;
     let retweets;
+    let id;
     for (let i = 0; i < 50; i++) {
         type = tweets.data[i].type;
         body = tweets.data[i].body;
@@ -20,10 +20,11 @@ async function renderFeed() {
         created = created.toString().slice(0, 24);
         likes = tweets.data[i].likeCount;
         retweets = tweets.data[i].retweetCount;
+        id = tweets.data[i].id;
 
         let tweet = document.createElement("div");
         tweet.classList.add("card", "column", "is-one-third", "is-spaced")
-        tweet.setAttribute("tweet-id", tweets.data[i].id);
+        tweet.setAttribute("tweet-id", id);
         let content_div = document.createElement("div");
         content_div.classList.add("card-content");
         let tweetinfo_div = document.createElement("div");
@@ -49,18 +50,18 @@ async function renderFeed() {
         retweets_p.classList.add("is-small")
         retweets_p.innerHTML = retweets.toString() + ' retweets';
         if (tweets.data[i].isLiked) {
-            likes_p.innerHTML += " (you have liked this tweet)";
+            likes_p.innerHTML += " (you)";
         }
         let lr_btns = document.createElement("div");
         lr_btns.classList.add("column");
         let like_btn = document.createElement("button");
-        like_btn.classList.add("button", "is-dark", "is-outlined", "like-tweet-btn", "is-small", "is-right-aligned");
-        like_btn.innerHTML = "Like Tweet";
+        like_btn.classList.add("button", "is-dark", "is-outlined", "like-tweet-btn", "is-small");
+        like_btn.innerHTML = "Toggle Like";
         let rtwt_btn = document.createElement("button");
-        rtwt_btn.classList.add("button", "is-dark", "is-outlined", "rtwt-btn", "is-small", "is-right-aligned");
+        rtwt_btn.classList.add("button", "is-dark", "is-outlined", "rtwt-btn", "is-small");
         rtwt_btn.innerHTML = "Retweet";
         let reply_btn = document.createElement("button");
-        reply_btn.classList.add("button", "is-dark", "is-outlined", "reply-btn", "is-small", "is-right-aligned");
+        reply_btn.classList.add("button", "is-dark", "is-outlined", "reply-btn", "is-small");
         reply_btn.innerHTML = "Reply";
 
         tweetinfo_div.appendChild(author_p);
@@ -81,13 +82,9 @@ async function renderFeed() {
         if (tweets.data[i].isMine) {
             let footer_div = document.createElement("footer");
             footer_div.classList.add("card-footer", "no-border", "is-centered");
-            let edit_button = document.createElement("button");
-            edit_button.classList.add("button", "edit-button", );
-            edit_button.innerHTML = "Edit";
+            let edit_button = renderEditButton();
             $('.edit-button').on('click', handleEditTweet);
-            let delete_button = document.createElement("button");
-            delete_button.classList.add("button", "delete-button");
-            delete_button.innerHTML = "Delete";
+            let delete_button = renderDeleteButton();
             $('.delete-button').on('click', handleDeleteTweet);
             footer_div.appendChild(edit_button);
             footer_div.appendChild(delete_button);
@@ -96,10 +93,30 @@ async function renderFeed() {
 
         document.getElementById("root").appendChild(tweet);
     }
+    $('.like-tweet-btn').on('click', handleLikeButton);
+    $('.rtwt-btn').on('click', handleRetweet);
 };
 
-async function renderTweetByID(id) {
+function renderEditButton() {
+    let btn = document.createElement("button");
+    btn.classList.add("button", "edit-button", );
+    btn.innerHTML = "Edit";
+    return btn;
+}
 
+function renderDeleteButton() {
+    let btn = document.createElement("button");
+    btn.classList.add("button", "delete-button");
+    btn.innerHTML = "Delete";
+    return btn;
+}
+
+function renderTweetByID(tweet_id) {
+    let body = tweets.data.find(i => i.id == tweet_id).body;
+    let content = document.createElement("div");
+    content.classList.add("content", "title");
+    content.innerHTML = body;
+    return content;
 }
 
 function renderTweetWriter() {
@@ -147,93 +164,103 @@ function handleEditTweet(event) {
 }
 
 async function handleSaveEdits(event) {
-    let body = $(event.target).closest('.card').find('.save-edits-button').val().toString();
+    let body = $(event.target).closest('.card').find('#written-tweet').val().toString();
     let id = $(event.target).closest('.card').attr("tweet-id");
-    let url = base_url + "" + id.toString();
-    console.log(url);
-    try {
-        const result = await axios({
-            method: 'put',
-            url,
-            withCredentials: true,
-            data: {
-                body,
-            },
-        });
-    } catch {
-        console.log("error saving edits to tweet");
-    }
+    let url = base_url + id;
+    const result = await axios({
+        method: 'put',
+        url,
+        withCredentials: true,
+        data: {
+            body,
+        },
+    });
 }
 
+// for cancel button when editing a tweet
 function handleCancelEdits(event) {
-    $(event.target).closest('.card').find('.content').replaceWith(renderTweetEditor(tweet));
+    let tweet_id = $(event.target).closest('.card').attr('tweet-id');
+    $(event.target).closest('.card').find('#written-tweet').replaceWith(renderTweetByID(tweet_id));
+    $(event.target).closest('.card').find('.save-edits-button').replaceWith(renderEditButton());
+    $(event.target).closest('.card').find('.cancel-edits-button').replaceWith(renderDeleteButton());
+    $('.edit-button').on('click', handleEditTweet);
+    $('.delete-button').on('click', handleDeleteTweet);
 }
 
+// for delete button on active user-published tweets
 async function handleDeleteTweet(event) {
     let id = $(event.target).closest('.card').attr("tweet-id");
-    let url = base_url + "" + id.toString();
-    try {
-        const result = await axios({
-            method: 'delete',
-            url,
-            withCredentials: true,
-        });
-    } catch {
-        console.log("error deleting tweet");
-    }
+    let url = base_url + id;
+    const result = await axios({
+        method: 'delete',
+        url,
+        withCredentials: true,
+    });
 }
 
+// for writing a new tweet
 function handleWriteTweet(event) {
     $('#tweet-editor').empty().append(renderTweetWriter());
     $('#send-tweet').on('click', handleSendTweet);
     $('#cancel-tweet').on('click', handleCancelTweet);
 };
 
+// cancel writing a new tweet
 function handleCancelTweet(event) {
     $('#tweet-editor').empty();
 }
 
+// publishing a new tweet
 async function handleSendTweet(event) {
-    try {
-        const result = await axios({
-            method: 'post',
-            url: base_url,
-            withCredentials: true,
-            data: {
-                body: $('#written-tweet').val(),
-            }
-        });
-    } catch {
-        console.log("error sending tweet");
-    }
+    const result = await axios({
+        method: 'post',
+        url: base_url,
+        withCredentials: true,
+        data: {
+            body: $('#written-tweet').val(),
+        }
+    });
     handleCancelTweet();
 }
 
-function handleLikeTweet(event) {
-    console.log('you liked a goddamn tweet');
+async function handleLikeButton(event) {
+    let tweet_id = $(event.target).closest('.card').attr("tweet-id");
+    let url = base_url + tweet_id + "/" + (tweets.data.find(i => i.id == tweet_id).isLiked ? "unlike" : "like");
+    const result = await axios({
+        method: 'put',
+        url,
+        withCredentials: true,
+    });
+}
+
+function renderRetweetReplyBox() {
+    return `
+    <textarea id="rt-reply" class="textarea is-info" placeholder="Write a retweet/reply" 
+    rows="2"></textarea> <br>
+    `;
 }
 
 async function handleRetweet(event) {
-    console.log('youre retweeting some shit');
+    $(renderRetweetReplyBox()).insertBefore($(event.target).closest('.card').find($('.card-footer')));
+    let tweet_id = $(event.target).closest('.card').attr("tweet-id");
+    let body = $('#rt-reply').html();
+    const result = await axios({
+        method: 'post',
+        url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets',
+        withCredentials: true,
+        data: {
+            "type": "retweet",
+            "parent": tweet_id,
+            body,
+        },
+    });
 }
 
 function setListeners() {
-    console.log('about to set listeners');
     $('#write-tweet').on('click', handleWriteTweet);
-    $('.like-tweet-btn').on('click', handleLikeTweet);
-    $('.rtwt-btn').on('click', handleRetweet);
 }
 
-const handleEditButtonPress = function(event) {
-    // TODO: Render the hero edit form for the clicked hero and replace the
-    //       hero's card in the DOM with their edit form instead
-    let hero = heroicData.find((h) => h.id == $(event.target).closest('.hero-card').data('id'));
-    $(event.target).closest('.hero-card').replaceWith(renderHeroEditForm(hero));
-};
-
 $(() => {
-    console.log("loaded");
     renderFeed();
-    console.log('feed rendered');
     setListeners();
 });
